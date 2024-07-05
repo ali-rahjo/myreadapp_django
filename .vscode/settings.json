@@ -1,5 +1,5 @@
 {
-    "workbench.editor.showTabs": false,
+    "workbench.editor.showTabs": "single",
     "workbench.editor.limit.enabled": true,
     "workbench.editor.limit.value": 1,
 

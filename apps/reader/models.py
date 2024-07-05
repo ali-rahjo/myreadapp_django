@@ -30,3 +30,5 @@ class Reader(AbstractUser):
                 check=models.Q(title__in=['Mr', 'Mrs', 'Ms', 'Dr'])
             )
         ]
+
+

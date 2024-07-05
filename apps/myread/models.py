@@ -78,3 +78,6 @@ class StatusPercent(models.Model):
                 check=models.Q(read_status__in=['pending', 'reading', 'done'])
             )
         ]
+    # but when dealing with model's method , migration is not needed.
+    def __str__(self) ->  str:
+        return f'{self.percentage_read_range}({self.read_status})'

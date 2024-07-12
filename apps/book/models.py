@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField # postgresql specific
-
+from apps.core.models import  CreateModifiedAbstratct
 # Create your models here.
 class BookManager(models.Manager):
      def get_books_by_tags(self, *tags):
@@ -38,7 +38,7 @@ class BookAuthor(models.Model):
             return f'{self.author} {self.role} {self.book}'
 
 
-class Book(models.Model):
+class Book(CreateModifiedAbstratct):
     BOOK_CATEGORY = {
         "pr": "programming",
         "ar": "art",
@@ -58,11 +58,11 @@ class Book(models.Model):
     published_date = models.IntegerField()
     publisher = models.CharField(max_length=50)
     #authors = ArrayField(ArrayField(models.CharField(max_length=50)))
-    authors = models.ManyToManyField('book.Author', related_name='book', through='book.BookAuthor')
+    authors = models.ManyToManyField('book.Author', through='book.BookAuthor')
     lang = models.CharField(max_length=50)
     edition = models.SmallIntegerField(null=True, blank=True)
     book_format= models.CharField(max_length=2, choices=BOOK_FORMAT, default='eb')
-    tags = models.ManyToManyField('book.Tag', related_name='book')
+    tags = models.ManyToManyField('book.Tag')
 
     # override objects with now manager
 
@@ -88,6 +88,9 @@ class Book(models.Model):
     
     def __str__(self) -> str:
          return f'{self.title}({self.isbn})'
+    
+    class Meta:
+        default_related_name = '%(app_label)s_%(model_name)s'
 
 
 

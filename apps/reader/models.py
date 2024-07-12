@@ -17,6 +17,8 @@ class NIC(models.Model):
 
     def __str__(self) -> str:
         return f'{self.nic_number}(del: {self.delivery_date}, exp: {self.expiration_date})'
+    class Meta:
+        db_table_comment = 'National Identity Card'
 
     #NIC.objects.filter(delivery_date= models.F('expiration_date'))
     
@@ -49,6 +51,7 @@ class Reader(AbstractUser):
     
     class Meta:
         # Define some meta data, including constraints
+        db_table = 'reader'
         constraints = [
             models.CheckConstraint(
                 # reader_Reader_title_check

@@ -1,24 +1,26 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField # postgresql specific
-from apps.core.models import  CreateModifiedAbstratct
+from apps.core.models import CreatedModifiedAbstract
+
+from apps.core.constants import BOOK_CATEGORY
 # Create your models here.
+
 class BookManager(models.Manager):
-     def get_books_by_tags(self, *tags):
-          # self = Book.objects
-          return self.filter(tags__name__in=tags)
-     
+    # self = <Model>.objects
+    def get_books_by_tags(self, *tags):
+        return self.filter(tags__name__in=tags)
 
 
 class Tag(models.Model):
-     name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True)
 
-     def __str__(self) -> str:
-          return self.name
-
+    def __str__(self) -> str:
+        return self.name
 
 class Author(models.Model):
     first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    # book_set
 
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
@@ -26,26 +28,21 @@ class Author(models.Model):
 class BookAuthor(models.Model):
     BOOK_AUTHOR_ROLE = {
         'author': 'Author',
-        'co_author': 'Co_athor',
+        'co_author': 'Co-Author',
         'editor': 'Editor'
     }
-
     book = models.ForeignKey('book.Book', on_delete=models.CASCADE)
     author = models.ForeignKey('book.Author', on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=BOOK_AUTHOR_ROLE, default='author')
+
+    def __str__(self) -> str:
+        return f'{self.author} {self.role} {self.book}'
     
-    def __str__(self):
-            return f'{self.author} {self.role} {self.book}'
+    class Meta:
+        verbose_name_plural = 'Books and Authors'
 
-
-class Book(CreateModifiedAbstratct):
-    BOOK_CATEGORY = {
-        "pr": "programming",
-        "ar": "art",
-        "hi": "history",
-        "po": "politics",
-        "ot": "others"
-    }
+class Book(CreatedModifiedAbstract):
+    
     BOOK_FORMAT = {
         "eb": "ebook",
         "hc": "hardcover"
@@ -61,36 +58,24 @@ class Book(CreateModifiedAbstratct):
     authors = models.ManyToManyField('book.Author', through='book.BookAuthor')
     lang = models.CharField(max_length=50)
     edition = models.SmallIntegerField(null=True, blank=True)
-    book_format= models.CharField(max_length=2, choices=BOOK_FORMAT, default='eb')
+    book_format = models.CharField(max_length=2, choices=BOOK_FORMAT, default='eb')
     tags = models.ManyToManyField('book.Tag')
 
-    # override objects with now manager
-
+    # Override objects with now Manager
     objects = BookManager()
 
-    def get_books_by_tags(cls, *tags):
-         return cls.objects.filter(tags__name__in=tags)
-
-    def __str__(self) -> str:
-        return f'{self.title}({self.isbn})'
-    
     # @classmethod
     # def get_books_by_tags(cls, *tags):
-    #      return cls.objects.filter(tags__name__in=tags)
-# author = Author(first_name='doris', last_name='kelly')
-# author.save()
-# book = Book.objects.first()
-# book.author.add(author, through_defaults={'role': 'author'})
+    #     return cls.objects.filter(tags__name__in=tags)
 
     @property
     def short_des(self):
-        return f'{self.description[0:30]}...'
-    
+        return f'{self.description[:30]}...'
+
     def __str__(self) -> str:
-         return f'{self.title}({self.isbn})'
-    
+        return f'{self.title}({self.isbn})'
+
     class Meta:
+        ordering = ('-title',)
+        # <app>_<model>
         default_related_name = '%(app_label)s_%(model_name)s'
-
-
-

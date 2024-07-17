@@ -16,6 +16,7 @@ class MyRead(models.Model):
     end_read_date = models.DateField(null=True, blank=True)
 
     class Meta:
+        unique_together = ('book_isbn', 'reader_username', 'start_read_date')
         constraints = [
             models.CheckConstraint(
                 name='%(app_label)s_%(class)s_per_read_check',
@@ -57,6 +58,8 @@ class MyRead(models.Model):
 
         ]
 
+    def __str__(self) -> str:
+        return f'{self.reader_username}({self.book_isbn})'
 
 class StatusPercent(models.Model):
     SP_CHOICE ={
@@ -72,12 +75,14 @@ class StatusPercent(models.Model):
     read_status = models.CharField(max_length=10, choices=SP_CHOICE, default='pending')
 
     class Meta:
+        verbose_name_plural = 'Status Percentages'
         constraints = [
             models.CheckConstraint(
                 name='%(app_label)s_%(class)s_read_status_check',
                 check=models.Q(read_status__in=['pending', 'reading', 'done'])
             )
         ]
-    # but when dealing with model's method , migration is not needed.
-    def __str__(self) ->  str:
+
+    def __str__(self) -> str:
+        # But when dealing with model's method, migration is not needed.
         return f'{self.percentage_read_range}({self.read_status})'

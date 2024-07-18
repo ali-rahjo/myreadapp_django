@@ -6,26 +6,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Application definition
 DEFAULT_APPS = [
-     "django.contrib.admin",
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
-CUSTOM_APPS =[
-    # user defined apps
-    'apps.reader',
-    'apps.book',
-    'apps.myread',
-    'apps.core',
+CUSTOM_APPS = [
+    # USER DEFINED APPS
+    "apps.reader",
+    "apps.book",
+    "apps.myread",
+    "apps.core",
 ]
-THIRD_PARTY_APPS = [ 
-    # external apps
+THIRD_PARTY_APPS = [
+    # EXTERNAL APPS
 ]
 
-INSTALLED_APPS = [*DEFAULT_APPS, *CUSTOM_APPS,*THIRD_PARTY_APPS]
-   
+INSTALLED_APPS = [*DEFAULT_APPS, *CUSTOM_APPS, *THIRD_PARTY_APPS]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -36,14 +36,16 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-
-
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [str(BASE_DIR/'core' / 'templates')],
+        # You want to be explicit on the location of your templates
+        "DIRS": [str(BASE_DIR / 'core' / 'templates')],
+        # Django will search for tempates in each app that is 
+        # registered in the INSTALLED_APPS
+        # It will look for a specific folder called `templates`
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -57,8 +59,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -87,13 +87,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# inform django about the new user model
-# AUTH_USER _MODEL 
+# Inform django about the new user model
+# AUTH_USER_MODEL = <app_name>.<model_class>
 AUTH_USER_MODEL = 'reader.Reader'
